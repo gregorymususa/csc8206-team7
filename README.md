@@ -18,22 +18,23 @@ git config --global user.email your.username@emailprovider.com
 
 #Daily use
 // PULL changes FROM GitHub
+
 git pull origin master
 
 // PUSH changes TO GitHub (-f force) (./* is where you put the files you want to add)
-git add -f ./*			# Adds only — adds everything (you need to commit explicitly after)
-OR
-git commit -a -m "Commit notes"	# Commit and Add simultaneously — commits files you changed only
 
-// Commit only
-git commit -m "Test commit"	# -m "commit notes, what did you change"
+git commit -a -m "Commit notes"
+
+* "-a" Commits modified and deleted files only
+* "-f" Forces "github ignored" files to be committed (may or may not come in handy)
+* "-m" Commit notes
 
 git push -f <remote-name> <branch-name>
 git push -f origin master
 
 
 # Roll back
-## ASK TEAM BEFORE YOU DO THIS — EVERYONE HAS TO AGREE
+*ASK TEAM BEFORE YOU DO THIS — EVERYONE HAS TO AGREE*
 
 git reset --hard <old-commit-id>
 
@@ -41,6 +42,6 @@ git reset --hard <old-commit-id>
 # Setting up Eclipse
 Open Eclipse MARS, and use any folder of your choosing as workspace (except the folder you synced with git)
 
-Import Existing project — select the git folder
+Import "Existing Projects into Workspace" — select the git folder
 
 Eclipse should link to the project
