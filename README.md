@@ -28,7 +28,10 @@ git pull origin master
 
 // PUSH changes TO GitHub (-f force) (./* is where you put the files you want to add)
 git add -f ./*
-git commit -m "Test commit"
+OR
+git commit -a -m "Commit notes"
+
+git commit -m "Test commit" //-m "commit notes, what did you change"
 
 git push -f <remote-name> <branch-name>
 git push -f origin master
