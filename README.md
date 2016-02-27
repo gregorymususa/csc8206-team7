@@ -23,15 +23,16 @@ git config --global user.email your.username@emailprovider.com
 /* Daily use */
 /*************/
 
-// PULL changes FROM GitHub
+# PULL changes FROM GitHub
 git pull origin master
 
-// PUSH changes TO GitHub (-f force) (./* is where you put the files you want to add)
-git add -f ./*
+# PUSH changes TO GitHub (-f force) (./* is where you put the files you want to add)
+git add -f ./*			# Adds only — adds everything (you need to commit explicitly after)
 OR
-git commit -a -m "Commit notes"
+git commit -a -m "Commit notes"	# Commit and Add simultaneously — commits files you changed only
 
-git commit -m "Test commit" //-m "commit notes, what did you change"
+# Commit only
+git commit -m "Test commit"	# -m "commit notes, what did you change"
 
 git push -f <remote-name> <branch-name>
 git push -f origin master
