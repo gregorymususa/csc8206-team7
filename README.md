@@ -17,11 +17,11 @@ git config --global user.email your.username@emailprovider.com
 
 
 #Daily use
-// PULL changes FROM GitHub
+**PULL changes FROM GitHub**
 
 git pull origin master
 
-// PUSH changes TO GitHub (-f force) (./* is where you put the files you want to add)
+**COMMIT, then PUSH changes TO GitHub**
 
 git commit -a -m "Commit notes"
 
