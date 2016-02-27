@@ -11,6 +11,7 @@ mkdir "csc8206-team7"
 This is where the contents of the repository will be — we are using Eclipse MARS, Java 8.
 
 In the folder you just created, type the following:
+
 1. git init
 2. git remote add origin https://github.com/gregorymususa/csc8206-team7
 3. git config --global user.name "yourgithubusername"
