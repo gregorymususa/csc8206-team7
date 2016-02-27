@@ -39,7 +39,7 @@ git push -f origin master
 # Roll back
 *ASK TEAM BEFORE YOU DO THIS — EVERYONE HAS TO AGREE*
 
-git reset --hard <old-commit-id>
+git reset --hard "old-commit-id"
 
 
 # Setting up Eclipse
