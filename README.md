@@ -5,7 +5,7 @@ On your PC navigate, to where you save your schoolwork, and create the directory
 mkdir "csc8206-team7"
 
 This is where the contents of the repository will be.
-We are using Eclipse MARS,
+We are using Eclipse MARS, Java 8
 
 
 
