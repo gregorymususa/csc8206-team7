@@ -1,19 +1,20 @@
 csc8206-team7
+
 CSC8206 Team 7 Group Project
 
 
 #Initial Setup
-On your PC navigate, to where you save your schoolwork, and create the directory:
+On your PC navigate, to where you save your schoolwork, and create a directory:
+
 mkdir "csc8206-team7"
 
-This is where the contents of the repository will be.
-We are using Eclipse MARS, Java 8
+This is where the contents of the repository will be — we are using Eclipse MARS, Java 8.
 
 In the folder you just created, type the following:
-git init
-git remote add origin https://github.com/gregorymususa/csc8206-team7
-git config --global user.name "yourgithubusername"
-git config --global user.email your.username@emailprovider.com
+1. git init
+2. git remote add origin https://github.com/gregorymususa/csc8206-team7
+3. git config --global user.name "yourgithubusername"
+4. git config --global user.email your.username@emailprovider.com
 
 
 #Daily use
@@ -30,6 +31,7 @@ git commit -a -m "Commit notes"
 * "-m" Commit notes
 
 git push -f <remote-name> <branch-name>
+
 git push -f origin master
 
 
