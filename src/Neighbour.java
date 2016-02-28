@@ -4,7 +4,7 @@
  * @author Team 7
  *
  */
-public abstract class Neighbour {
+public class Neighbour {
 	
 	private String name;
 	
