@@ -26,15 +26,15 @@ public class Block {
 		this.downNeigh = downNeigh;
 	}
 	
-	/**
-	 * tells if it is clear
-	 * @return isClear
-	 */
-	public boolean getIsClear(){
-		if(upNeigh.getStatus() && downNeigh.getStatus())
-			return true;
-		return false;	
-	}
+//	/**
+//	 * tells if it is clear
+//	 * @return isClear
+//	 */
+//	public boolean getIsClear(){
+//		if(upNeigh.getStatus() && downNeigh.getStatus())
+//			return true;
+//		return false;	
+//	}
 
 	public Neighbour getDownNeigh() {
 		return downNeigh;
