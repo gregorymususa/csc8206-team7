@@ -1,4 +1,3 @@
-
 /**
  * Implements the Block, as part of the Railway Interlocking system
  * @author Team 7
@@ -7,34 +6,58 @@
 public class Block {
 
 	private String name;
+	private Neighbour upNeigh;
+	private Neighbour downNeigh;
+	private Location location;
+	
 	
 	public Block(String name) {
 		this.name = name;
 	}
 
-	public Block(String upNeigh, String downNeigh) {
-		if (
-		
+	public Block(Neighbour upNeigh, Neighbour downNeigh) {
+		this.upNeigh = upNeigh;
+		this.downNeigh = downNeigh;
 	}
-/**
- * tells if it is clear
- * @return isClear
- */
-	public String getIsClear(){
-		String c = isclear;
-		return c;	
+	
+	public Block(String name,Neighbour upNeigh, Neighbour downNeigh) {
+		this.name = name;
+		this.upNeigh = upNeigh;
+		this.downNeigh = downNeigh;
 	}
-/**	tells true or false if any trains are on the tracks	
- * 
- * @param c
- * @return ture or false
- */
-	public boolean setIsClear(String c){
-		if(!(c==null))
-			return false;
-		
-		else
-		return true;
+	
+	/**
+	 * tells if it is clear
+	 * @return isClear
+	 */
+	public boolean getIsClear(){
+		if(upNeigh.getStatus() && downNeigh.getStatus())
+			return true;
+		return false;	
+	}
+
+	public Neighbour getDownNeigh() {
+		return downNeigh;
+	}
+	
+	public void setDownNeigh(Neighbour downNeigh) {
+		this.downNeigh = downNeigh;
+	}
+
+	public Neighbour getUpNeigh() {
+		return upNeigh;
+	}
+	
+	public void setUpNeigh(Neighbour upNeigh) {
+		this.upNeigh = upNeigh;
+	}
+	
+	public Location getLocation() {
+		return location;
+	}
+	
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 
