@@ -1,64 +1,33 @@
+
+
 /**
- * Implements the Block, as part of the Railway Interlocking system
+ * A non-instantiated parent class
+ * 
+ * This was created to:
+ * - Add semantic sense to the systems structures
+ * - To aid ControlRoom.buildRoute(....,path[]); an array which contains both block, and point
+ *  
  * @author Team 7
  *
  */
-public class Block {
+public abstract class Block {
 
 	private String name;
-	private Neighbour upNeigh;
-	private Neighbour downNeigh;
-	private Location location;
-	
 	
 	public Block(String name) {
 		this.name = name;
 	}
-
-	public Block(Neighbour upNeigh, Neighbour downNeigh) {
-		this.upNeigh = upNeigh;
-		this.downNeigh = downNeigh;
+	
+	public String getName() {
+		String n = this.name;
+		return n;
 	}
 	
-	public Block(String name,Neighbour upNeigh, Neighbour downNeigh) {
-		this.name = name;
-		this.upNeigh = upNeigh;
-		this.downNeigh = downNeigh;
+	/**
+	 * Override toString method
+	 */
+	public String toString() {
+		String n = this.name;
+		return n;
 	}
-	
-//	/**
-//	 * tells if it is clear
-//	 * @return isClear
-//	 */
-//	public boolean getIsClear(){
-//		if(upNeigh.getStatus() && downNeigh.getStatus())
-//			return true;
-//		return false;	
-//	}
-
-	public Neighbour getDownNeigh() {
-		return downNeigh;
-	}
-	
-	public void setDownNeigh(Neighbour downNeigh) {
-		this.downNeigh = downNeigh;
-	}
-
-	public Neighbour getUpNeigh() {
-		return upNeigh;
-	}
-	
-	public void setUpNeigh(Neighbour upNeigh) {
-		this.upNeigh = upNeigh;
-	}
-	
-	public Location getLocation() {
-		return location;
-	}
-	
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-
-
 }

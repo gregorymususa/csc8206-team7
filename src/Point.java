@@ -1,21 +1,23 @@
+
 /**
  * Point models a section of track that forks off from a main line
  * Point can set track to be in plus or minus setting
  *  
- * @author Lisa
+ * @author Team 7
  *
  */
-public class Point {
+public class Point extends Block {
 	public static final String PLUS = "plus";
 	public static final String MINUS = "minus";
 	
-	private String name;
-	private Signal mainline;
-	private Signal plusline;
-	private Signal minusline;
+	private Block mainline;
+	private Block plusline;
+	private Block minusline;
 	private String track = PLUS;
 	
-	public Point(String name, Signal mainline, Signal plusline, Signal minusline){
+	public Point(String name, Block mainline, Block plusline, Block minusline){
+		super(name);
+		
 		//check signal follows naming convention
 		if(!(name.startsWith("p")))
 			throw new IllegalArgumentException("Invalid point name: " + name);
@@ -28,19 +30,9 @@ public class Point {
 		if(mainline.equals(plusline)||mainline.equals(minusline)||plusline.equals(minusline))
 			throw new IllegalArgumentException("Duplicate defining signal.");
 		
-		this.name = name; 
 		this.mainline = mainline;
 		this.minusline = minusline;
 		this.plusline = plusline;
-	}
-
-	/**
-	 * 
-	 * @return name of point
-	 */
-	public String getName(){
-		String n = name;
-		return n;
 	}
 	
 	/**
@@ -66,26 +58,26 @@ public class Point {
 
 	/**
 	 * 
-	 * @return name of the signal controlling the main line
+	 * @return block controlling the main line
 	 */
-	public String getMain(){
-		return mainline.getName();
+	public Block getMainLine(){
+		return mainline;
 	}
 	
 	/**
 	 * 
-	 * @return name of the signal controlling the plus line
+	 * @return block controlling the plus line
 	 */	
-	public String getPlus(){
-		return plusline.getName();
+	public Block getPlusLine(){
+		return plusline;
 	}
 	
 	/**
 	 * 
-	 * @return name of the signal controlling the minus line
+	 * @return block controlling the minus line
 	 */
-	public String getMinus(){
-		return minusline.getName();
+	public Block getMinusLine(){
+		return minusline;
 	}
 
 }

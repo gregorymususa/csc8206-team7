@@ -1,4 +1,4 @@
-package rethink;
+
 
 /**
  * TODO Do we want to rename this to SectionBlock? To make more sense, at first glance? (What about PointBlock?)
