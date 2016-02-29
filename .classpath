@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/xuewong/Desktop/csc8206-team7/external_library/commons-csv-1.2.jar"/>
-	<classpathentry kind="lib" path="/Users/xuewong/Desktop/csc8206-team7/external_library/gs-core-1.3.jar"/>
-	<classpathentry kind="lib" path="/Users/xuewong/Desktop/csc8206-team7/external_library/gs-core-1.3-javadoc.jar"/>
-	<classpathentry kind="lib" path="/Users/xuewong/Desktop/csc8206-team7/external_library/gs-core-1.3-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/gregory/Documents/University/Newcastle University/CSC8206 Group Project/csc8206-team7/external_library/commons-csv-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/gregory/Documents/University/Newcastle University/CSC8206 Group Project/csc8206-team7/external_library/gs-core-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/gregory/Documents/University/Newcastle University/CSC8206 Group Project/csc8206-team7/external_library/gs-core-1.3-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/gregory/Documents/University/Newcastle University/CSC8206 Group Project/csc8206-team7/external_library/gs-core-1.3-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

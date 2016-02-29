@@ -1,6 +1,16 @@
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
 import org.graphstream.stream.file.FileSource;
@@ -67,18 +77,53 @@ public class Network
 			
 	}
 	
-	//read file, not completed
-	public boolean readFile(String filePath)
+	/**
+	 * TODO Read File
+	 * @param filePath
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean readFile(String filePath) throws IOException
 	{
+		File csvFile = new File(filePath);
+		CSVParser csvParser = CSVParser.parse(csvFile,Charset.forName("UTF-8"),CSVFormat.EXCEL.withHeader("Type","Name","Settings","isFirstSection", "isLastSection").withSkipHeaderRecord(true));
 		
-		try {
-			fs = FileSourceFactory.sourceFor(filePath);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ArrayList<Block> blocks = new ArrayList<Block>();
+		
+		List<CSVRecord> csvRecords = csvParser.getRecords();
+		
+		for(int i = 0; i < csvRecords.size(); i+=1) {
+			String type = csvRecords.get(i).get("Type");
+			String name = csvRecords.get(i).get("Name");
+			String settings = csvRecords.get(i).get("Settings");
+			boolean isFirstSection = Boolean.valueOf(csvRecords.get(i).get("isFirstSection"));
+			boolean isLastSection = Boolean.valueOf(csvRecords.get(i).get("isLastSection"));
 			
-		fs.addSink(graph);
+			if(("section".equalsIgnoreCase(type)) && (true == isFirstSection)) {
+				Section s = new Section(name, null, null);
+				System.out.println("Previous entry was a location: " + csvRecords.get(i-1).get("Name"));
+			}
+			else if("section".equalsIgnoreCase(type)) {
+				Section s = new Section(name, null, null);
+				System.out.println("Generate previous and later signal");
+				
+			}
+			if(("section".equalsIgnoreCase(type)) && (true == isLastSection)) {
+				Section s = new Section(name, null, null);
+				System.out.println("Next entry is a location: " + csvRecords.get(i+1).get("Name"));
+			}
+			
+		}
+		
+		
+//		try {
+//			fs = FileSourceFactory.sourceFor(filePath);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//			
+//		fs.addSink(graph);
 		
 		return false;
 	}

@@ -10,12 +10,12 @@ public class Point extends Block {
 	public static final String PLUS = "plus";
 	public static final String MINUS = "minus";
 	
-	private Block mainline;
-	private Block plusline;
-	private Block minusline;
+	private Section mainline;
+	private Section plusline;
+	private Section minusline;
 	private String track = PLUS;
 	
-	public Point(String name, Block mainline, Block plusline, Block minusline){
+	public Point(String name, Section mainline, Section plusline, Section minusline){
 		super(name);
 		
 		//check signal follows naming convention
@@ -60,7 +60,7 @@ public class Point extends Block {
 	 * 
 	 * @return block controlling the main line
 	 */
-	public Block getMainLine(){
+	public Section getMainLine(){
 		return mainline;
 	}
 	
@@ -68,7 +68,7 @@ public class Point extends Block {
 	 * 
 	 * @return block controlling the plus line
 	 */	
-	public Block getPlusLine(){
+	public Section getPlusLine(){
 		return plusline;
 	}
 	
@@ -76,7 +76,7 @@ public class Point extends Block {
 	 * 
 	 * @return block controlling the minus line
 	 */
-	public Block getMinusLine(){
+	public Section getMinusLine(){
 		return minusline;
 	}
 

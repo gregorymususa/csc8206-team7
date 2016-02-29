@@ -10,13 +10,13 @@ public class Tester {
 		
 		Section b1 = new Section("b1",s1,a);
 		
-		System.out.println("Up Neighbour:\t" + s1.getStatus() + "\t" + s1.getDirection());
-		System.out.println("Down Neighbour:\t" + a.getName()+"\n");
-		
-		System.out.println("Up Neighbour:\t" + ((Signal) b1.getUpNeigh()).getStatus() + "\t" + ((Signal) b1.getUpNeigh()).getDirection());
-		System.out.println("Down Neighbour:\t" + b1.getDownNeigh().getName());
-		
-		System.out.println("\nName:\t" + b1.getUpNeigh().getClass().getName());
+//		System.out.println("Up Neighbour:\t" + s1.getStatus() + "\t" + s1.getDirection());
+//		System.out.println("Down Neighbour:\t" + a.getName()+"\n");
+//		
+//		System.out.println("Up Neighbour:\t" + ((Signal) b1.getUpNeigh()).getStatus() + "\t" + ((Signal) b1.getUpNeigh()).getDirection());
+//		System.out.println("Down Neighbour:\t" + b1.getDownNeigh().getName());
+//		
+//		System.out.println("\nName:\t" + b1.getUpNeigh().getClass().getName());
 		
 		//**********************//
 		// Testing Control Room //
@@ -39,6 +39,18 @@ public class Tester {
 		try {
 			controlRoom.buildRoute("r1", s1, s2, points, signals, path);
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//****************************//
+		// Testing Network.readFile() //
+		//****************************//
+		Network network = new Network("path");
+		
+		try {
+			network.readFile("./database/Network.csv");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
