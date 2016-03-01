@@ -16,7 +16,7 @@ public class Point extends Block {
 	private Section minusline;
 	private String track = PLUS;
 	
-	public Point(String name, Section mainline, Section plusline, Section minusline){
+	public Point(String name, Section main_line, Section plus_line, Section minus_line){
 		super(name);
 		
 		//check signal follows naming convention
@@ -24,16 +24,18 @@ public class Point extends Block {
 			throw new IllegalArgumentException("Invalid point name: " + name);
 		
 		//Checks to make sure none of the signals are null.
-		if(mainline.equals(null)||minusline.equals(null)||plusline.equals(null))
+		if(main_line.equals(null)||minus_line.equals(null)||plus_line.equals(null))
 			throw new IllegalArgumentException("Duplicate defining signal.");
 
 		//Checks to make sure none of the signals are the same.
-		if(mainline.equals(plusline)||mainline.equals(minusline)||plusline.equals(minusline))
+		if(main_line.equals(plus_line)||main_line.equals(minus_line)||plus_line.equals(minus_line))
 			throw new IllegalArgumentException("Duplicate defining signal.");
 		
 		this.mainline = mainline;
 		this.minusline = minusline;
 		this.plusline = plusline;
+		
+//		System.out.println(mainline);
 	}
 	
 	/**

@@ -36,27 +36,27 @@ public class Network
 	{
 		Network network = new Network("path");
 		//Example Code
-		graph.addNode("A");
-		graph.addNode("b1");
-		graph.addNode ("b2");
-		graph.addNode ("p1");
-		graph.addNode("b3");
-		graph.addNode("b4");
-		graph.addNode ("p2");
-		graph.addNode("b5");
-		graph.addNode("b6");
-		graph.addNode("B");
-		
-		graph.addEdge("A0B1", "A", "b1");
-		graph.addEdge("B1B2", "b1", "b2");
-		graph.addEdge("B2P1", "b2", "p1");
-		graph.addEdge("P1B3", "p1", "b3");
-		graph.addEdge("P1B4", "p1", "b4");
-		graph.addEdge("B3P2", "b3", "p2");
-		graph.addEdge("B4P2", "b4", "p2");
-		graph.addEdge("P2B5", "p2", "b5");
-		graph.addEdge("B5B6", "b5", "b6");
-		graph.addEdge("B6B0", "b6", "B");
+//		graph.addNode("A");
+//		graph.addNode("b1");
+//		graph.addNode ("b2");
+//		graph.addNode ("p1");
+//		graph.addNode("b3");
+//		graph.addNode("b4");
+//		graph.addNode ("p2");
+//		graph.addNode("b5");
+//		graph.addNode("b6");
+//		graph.addNode("B");
+//		
+//		graph.addEdge("A0B1", "A", "b1");
+//		graph.addEdge("B1B2", "b1", "b2");
+//		graph.addEdge("B2P1", "b2", "p1");
+//		graph.addEdge("P1B3", "p1", "b3");
+//		graph.addEdge("P1B4", "p1", "b4");
+//		graph.addEdge("B3P2", "b3", "p2");
+//		graph.addEdge("B4P2", "b4", "p2");
+//		graph.addEdge("P2B5", "p2", "b5");
+//		graph.addEdge("B5B6", "b5", "b6");
+//		graph.addEdge("B6B0", "b6", "B");
 		
 		
 		//Testing sprite
@@ -99,19 +99,23 @@ public class Network
 			boolean isFirstSection = Boolean.valueOf(csvRecords.get(i).get("isFirstSection"));
 			boolean isLastSection = Boolean.valueOf(csvRecords.get(i).get("isLastSection"));
 			
-			if(("section".equalsIgnoreCase(type)) && (true == isFirstSection)) {
-				Section s = new Section(name, null, null);
-				System.out.println("Previous entry was a location: " + csvRecords.get(i-1).get("Name"));
-			}
-			else if("section".equalsIgnoreCase(type)) {
-				Section s = new Section(name, null, null);
-				System.out.println("Generate previous and later signal");
-				
-			}
-			if(("section".equalsIgnoreCase(type)) && (true == isLastSection)) {
-				Section s = new Section(name, null, null);
-				System.out.println("Next entry is a location: " + csvRecords.get(i+1).get("Name"));
-			}
+		
+			
+			
+			//Greg's code
+//			if(("section".equalsIgnoreCase(type)) && (true == isFirstSection)) {
+//				Section s = new Section(name, null, null);
+//				System.out.println("Previous entry was a location: " + csvRecords.get(i-1).get("Name"));
+//			}
+//			else if("section".equalsIgnoreCase(type)) {
+//				Section s = new Section(name, null, null);
+//				System.out.println("Generate previous and later signal");
+//				
+//			}
+//			if(("section".equalsIgnoreCase(type)) && (true == isLastSection)) {
+//				Section s = new Section(name, null, null);
+//				System.out.println("Next entry is a location: " + csvRecords.get(i+1).get("Name"));
+//			}
 			
 		}
 		
