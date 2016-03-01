@@ -46,7 +46,6 @@ public class Network
 		File csvFile = new File(filePath);
 		CSVParser csvParser = CSVParser.parse(csvFile,Charset.forName("UTF-8"),CSVFormat.EXCEL.withHeader("Path_id","Type","Name","Settings","isFirstSection", "isLastSection","EdgeFrom","EdgeTo").withSkipHeaderRecord(true));
 		
-		ArrayList<Block> blocks = new ArrayList<Block>();
 		Map<String, Section> hm = new HashMap<String,Section>();
 		
 		List<CSVRecord> csvRecords = csvParser.getRecords();
@@ -67,7 +66,7 @@ public class Network
 				n.addAttribute("signal", settings);
 				Section sctn = new Section(split[1]);
 				n.addAttribute("SignalObject", new Signal(name, split[0], sctn));
-				
+				 n.addAttribute("ui.label", name);
 				hm.put(sctn.getName(), sctn);
 			
 			}
@@ -79,6 +78,7 @@ public class Network
 				n.addAttribute("path_id", id);
 				n.addAttribute("type", type);
 				n.addAttribute("object", new Location(name));
+				 n.addAttribute("ui.label", name);
 			}
 
 		}
@@ -86,26 +86,23 @@ public class Network
 			int id = Integer.valueOf(csvRecords.get(i).get("Path_id")).intValue();//
 			String type = csvRecords.get(i).get("Type");
 			String name = csvRecords.get(i).get("Name");
-			String settings = csvRecords.get(i).get("Settings");
-			String[] split = settings.split(";");
-			String edgeTo = (csvRecords.get(i).get("EdgeTo"));
-			String edgeFrom = (csvRecords.get(i).get("EdgeFrom"));
 			
 			if("Section".equalsIgnoreCase(type))
 			{
 	
-				graph.addEdge(name, edgeTo, edgeFrom);
-				Edge e = graph.getEdge(name);
-				e.addAttribute("path_id", id);
-				e.addAttribute("type", type);
-	
+				graph.addNode(name);
+				Node n = graph.getNode(name);
+				System.out.println("Trace: " + id);
+				n.addAttribute("path_id", id);
+				n.addAttribute("type", type);
+				 n.addAttribute("ui.label", name);
 				if(hm.containsKey(name))
 				{
-					e.addAttribute("object", hm.get(name));
+					n.addAttribute("object", hm.get(name));
 				}
 				else
 				{
-					e.addAttribute("object", new Section(name));
+					n.addAttribute("object", new Section(name));
 				}
 		
 			}
@@ -117,51 +114,46 @@ public class Network
 		String name = csvRecords.get(i).get("Name");
 		String settings = csvRecords.get(i).get("Settings");
 		String[] split = settings.split(";");
-		String edgeTo = (csvRecords.get(i).get("EdgeTo"));
-		String edgeFrom = (csvRecords.get(i).get("EdgeFrom"));
 			
 		if("point".equalsIgnoreCase(type))
 			{
-				graph.addEdge(name, edgeTo, edgeFrom);
-				Edge e = graph.getEdge(name);
-				e.addAttribute("path_id", id);
-				e.addAttribute("type", type);
+				graph.addNode(name);
+				Node n = graph.getNode(name);
+				n.addAttribute("path_id", id);
+				n.addAttribute("type", type);
+				 n.addAttribute("ui.label", name);
+				Node n1 = graph.getNode(split[0]);
+				Node n2 = graph.getNode(split[1]);
+				Node n3 = graph.getNode(split[2]);
 				
-				Edge e1 = graph.getEdge(split[0]);
-				Edge e2 = graph.getEdge(split[1]);
-				Edge e3 = graph.getEdge(split[2]);
-				
-				e.addAttribute("object", new Point(name,(Section) e1.getAttribute("object"),(Section)e2.getAttribute("object"),(Section)e3.getAttribute("object")));
+				n.addAttribute("object", new Point(name,(Section) n1.getAttribute("object"),(Section)n2.getAttribute("object"),(Section)n3.getAttribute("object")));
 				
 			}
 				
 		}
 			
-//			if(("section".equalsIgnoreCase(type)) && (true == isFirstSection)) {
-//				Section s = new Section(name, null, null);
-//				System.out.println("Previous entry was a location: " + csvRecords.get(i-1).get("Name"));
-//			}
-//			else if("section".equalsIgnoreCase(type)) {
-//				Section s = new Section(name, null, null);
-//				System.out.println("Generate previous and later signal");
-//				
-//			}
-//			if(("section".equalsIgnoreCase(type)) && (true == isLastSection)) {
-//				Section s = new Section(name, null, null);
-//				System.out.println("Next entry is a location: " + csvRecords.get(i+1).get("Name"));
-//			}
+	for(int i = 0; i < csvRecords.size(); i+=1) 
+	{
+		
+		String edgeTo = csvRecords.get(i).get("EdgeTo");
+		String edgeFrom = csvRecords.get(i).get("EdgeFrom");
+		
+		if(!(edgeTo.equals("")&&edgeTo.equals("")))
+		{
+		String name = edgeTo+edgeFrom;
 			
 		
+		Node n1 = graph.getNode(edgeTo);
+		Node n2 = graph.getNode(edgeFrom);
 		
-		
-//		try {
-//			fs = FileSourceFactory.sourceFor(filePath);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//			
-//		fs.addSink(graph);
+		System.out.println("Node"+n1);
+		graph.addEdge(name,n2,n1);
+		Edge n = graph.getEdge(name);
+		//n.addAttribute("to", edgeTo);
+		//n.addAttribute("from", edgeFrom);
+		}				
+		}
+
 		graph.display();
 		return false;
 	}
