@@ -55,5 +55,6 @@ public class Tester {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		network.display();
 	}
 }

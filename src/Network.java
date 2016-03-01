@@ -29,16 +29,28 @@ public class Network
 	public Network(String filePath)
 	{
 		graph = new SingleGraph("Network");
-		
-		//readFile(filePath);
-		
-		//graph.display();
+	}
+	
+	/**
+	 * Returns the Network, represented by GraphStream's Graph
+	 * @return a Graph representation of the Network (Graph by GraphStream)
+	 */
+	public Graph getNetwork() {
+		Graph g = this.graph;
+		return g;
+	}
+	
+	/**
+	 * Display a graph as a Network
+	 */
+	public void display() {
+		graph.display();
 	}
 
 	/**
-	 * TODO Read File
-	 * @param filePath
-	 * @return
+	 * Reads in Network from File
+	 * @param filePath a CSV file, containing a representation of the Network
+	 * @return <code>true</code> if Network built successfully
 	 * @throws IOException
 	 */
 	public boolean readFile(String filePath) throws IOException
@@ -94,7 +106,6 @@ public class Network
 	
 				graph.addNode(name);
 				Node n = graph.getNode(name);
-				System.out.println("Trace: " + id);
 				n.addAttribute("path_id", id);
 				n.addAttribute("type", type);
 				 n.addAttribute("ui.label", name);
@@ -148,15 +159,12 @@ public class Network
 		Node n1 = graph.getNode(edgeTo);
 		Node n2 = graph.getNode(edgeFrom);
 		
-		System.out.println("Node"+n1);
 		graph.addEdge(name,n2,n1);
 		Edge n = graph.getEdge(name);
 		//n.addAttribute("to", edgeTo);
 		//n.addAttribute("from", edgeFrom);
 		}				
 		}
-
-		graph.display();
-		return false;
+		return true;
 	}
 }
