@@ -1,5 +1,6 @@
 
 
+
 /**
  * Implements the signal, as part of the Railway Interlocking system
  * @author Team 7
@@ -14,13 +15,14 @@ public class Signal extends Neighbour{
 	
 	private String status = STOP;
 	private String viewDirection;
+	private Block protects;
 	
 	/**
 	 * 
 	 * @param name name of signal
 	 * @param viewDirection set direction, UP or DOWN
 	 */
-	public Signal(String name, String viewDirection){
+	public Signal(String name, String viewDirection, Block protects){
 		super(name);
 		
 		if(!(name.startsWith("s"))) {
@@ -31,6 +33,8 @@ public class Signal extends Neighbour{
 			this.viewDirection = viewDirection;
 		else 
 			throw new IllegalArgumentException("Invalid signal view direction: " + viewDirection);
+	
+		this.protects = protects;
 	}
 	
 	/**
@@ -40,6 +44,11 @@ public class Signal extends Neighbour{
 	public String getStatus(){
 		String s = status;
 		return s;
+	}
+	
+	public Block getProtects(){
+		Block p = protects;
+		return p;
 	}
 
 	/**

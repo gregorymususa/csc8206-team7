@@ -1,4 +1,5 @@
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,7 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -32,51 +35,6 @@ public class Network
 		//graph.display();
 	}
 
-	public static void main(String [] args)
-	{
-		Network network = new Network("path");
-		//Example Code
-//		graph.addNode("A");
-//		graph.addNode("b1");
-//		graph.addNode ("b2");
-//		graph.addNode ("p1");
-//		graph.addNode("b3");
-//		graph.addNode("b4");
-//		graph.addNode ("p2");
-//		graph.addNode("b5");
-//		graph.addNode("b6");
-//		graph.addNode("B");
-//		
-//		graph.addEdge("A0B1", "A", "b1");
-//		graph.addEdge("B1B2", "b1", "b2");
-//		graph.addEdge("B2P1", "b2", "p1");
-//		graph.addEdge("P1B3", "p1", "b3");
-//		graph.addEdge("P1B4", "p1", "b4");
-//		graph.addEdge("B3P2", "b3", "p2");
-//		graph.addEdge("B4P2", "b4", "p2");
-//		graph.addEdge("P2B5", "p2", "b5");
-//		graph.addEdge("B5B6", "b5", "b6");
-//		graph.addEdge("B6B0", "b6", "B");
-		
-		
-		//Testing sprite
-		//SpriteManager sman = new SpriteManager(graph);
-		//Sprite s = sman.addSprite("S1");
-	
-		
-		graph.display();
-		
-		//Testing assigning objects to nodes and retrieving information
-		Node A = graph.getNode("A");
-		A.addAttribute("signal", new Signal("s1",Signal.DOWN));
-//		for(Edge e:A.getEachEdge())
-//			{
-			 Signal s1 =A.getAttribute("signal");
-			System.out.println( s1.getDirection());
-//			}
-			
-	}
-	
 	/**
 	 * TODO Read File
 	 * @param filePath
@@ -86,49 +44,117 @@ public class Network
 	public boolean readFile(String filePath) throws IOException
 	{
 		File csvFile = new File(filePath);
-		CSVParser csvParser = CSVParser.parse(csvFile,Charset.forName("UTF-8"),CSVFormat.EXCEL.withHeader("Type","Name","Settings","isFirstSection", "isLastSection").withSkipHeaderRecord(true));
+		CSVParser csvParser = CSVParser.parse(csvFile,Charset.forName("UTF-8"),CSVFormat.EXCEL.withHeader("Path_id","Type","Name","Settings","isFirstSection", "isLastSection","EdgeFrom","EdgeTo").withSkipHeaderRecord(true));
 		
-		ArrayList<Block> blocks = new ArrayList<Block>();
+		Map<String, Section> hm = new HashMap<String,Section>();
 		
 		List<CSVRecord> csvRecords = csvParser.getRecords();
 		
 		for(int i = 0; i < csvRecords.size(); i+=1) {
+			int id = Integer.valueOf(csvRecords.get(i).get("Path_id")).intValue();//
 			String type = csvRecords.get(i).get("Type");
 			String name = csvRecords.get(i).get("Name");
 			String settings = csvRecords.get(i).get("Settings");
-			boolean isFirstSection = Boolean.valueOf(csvRecords.get(i).get("isFirstSection"));
-			boolean isLastSection = Boolean.valueOf(csvRecords.get(i).get("isLastSection"));
+			String[] split= settings.split(";");
 			
-		
+			if("Signal".equalsIgnoreCase(type))
+			{
+				graph.addNode(name);
+				Node n = graph.getNode(name);
+				n.addAttribute("path_id", id);
+				n.addAttribute("type", type);
+				n.addAttribute("signal", settings);
+				Section sctn = new Section(split[1]);
+				n.addAttribute("SignalObject", new Signal(name, split[0], sctn));
+				 n.addAttribute("ui.label", name+" "+split[0]);
+				hm.put(sctn.getName(), sctn);
 			
+			}
 			
-			//Greg's code
-//			if(("section".equalsIgnoreCase(type)) && (true == isFirstSection)) {
-//				Section s = new Section(name, null, null);
-//				System.out.println("Previous entry was a location: " + csvRecords.get(i-1).get("Name"));
-//			}
-//			else if("section".equalsIgnoreCase(type)) {
-//				Section s = new Section(name, null, null);
-//				System.out.println("Generate previous and later signal");
-//				
-//			}
-//			if(("section".equalsIgnoreCase(type)) && (true == isLastSection)) {
-//				Section s = new Section(name, null, null);
-//				System.out.println("Next entry is a location: " + csvRecords.get(i+1).get("Name"));
-//			}
-			
+			else if("Location".equalsIgnoreCase(type))
+			{
+				graph.addNode(name);
+				Node n = graph.getNode(name);
+				n.addAttribute("path_id", id);
+				n.addAttribute("type", type);
+				n.addAttribute("object", new Location(name));
+				 n.addAttribute("ui.label", name);
+			}
+
 		}
+		for(int i = 0; i < csvRecords.size(); i+=1) {
+			int id = Integer.valueOf(csvRecords.get(i).get("Path_id")).intValue();//
+			String type = csvRecords.get(i).get("Type");
+			String name = csvRecords.get(i).get("Name");
+			
+			if("Section".equalsIgnoreCase(type))
+			{
+	
+				graph.addNode(name);
+				Node n = graph.getNode(name);
+				System.out.println("Trace: " + id);
+				n.addAttribute("path_id", id);
+				n.addAttribute("type", type);
+				 n.addAttribute("ui.label", name);
+				if(hm.containsKey(name))
+				{
+					n.addAttribute("object", hm.get(name));
+				}
+				else
+				{
+					n.addAttribute("object", new Section(name));
+				}
 		
+			}
+		}
+	
+	for(int i = 0; i < csvRecords.size(); i+=1) {
+		int id = Integer.valueOf(csvRecords.get(i).get("Path_id")).intValue();//
+		String type = csvRecords.get(i).get("Type");
+		String name = csvRecords.get(i).get("Name");
+		String settings = csvRecords.get(i).get("Settings");
+		String[] split = settings.split(";");
+			
+		if("point".equalsIgnoreCase(type))
+			{
+				graph.addNode(name);
+				Node n = graph.getNode(name);
+				n.addAttribute("path_id", id);
+				n.addAttribute("type", type);
+				 n.addAttribute("ui.label", name);
+				Node n1 = graph.getNode(split[0]);
+				Node n2 = graph.getNode(split[1]);
+				Node n3 = graph.getNode(split[2]);
+				
+				n.addAttribute("object", new Point(name,(Section) n1.getAttribute("object"),(Section)n2.getAttribute("object"),(Section)n3.getAttribute("object")));
+				
+			}
+				
+		}
+			
+	for(int i = 0; i < csvRecords.size(); i+=1) 
+	{
 		
-//		try {
-//			fs = FileSourceFactory.sourceFor(filePath);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//			
-//		fs.addSink(graph);
+		String edgeTo = csvRecords.get(i).get("EdgeTo");
+		String edgeFrom = csvRecords.get(i).get("EdgeFrom");
 		
+		if(!(edgeTo.equals("")&&edgeTo.equals("")))
+		{
+		String name = edgeTo+edgeFrom;
+			
+		
+		Node n1 = graph.getNode(edgeTo);
+		Node n2 = graph.getNode(edgeFrom);
+		
+		System.out.println("Node"+n1);
+		graph.addEdge(name,n2,n1);
+		Edge n = graph.getEdge(name);
+		//n.addAttribute("to", edgeTo);
+		//n.addAttribute("from", edgeFrom);
+		}				
+		}
+
+		graph.display();
 		return false;
 	}
 }

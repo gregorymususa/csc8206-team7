@@ -1,5 +1,6 @@
 
 
+
 /**
  * Parent class for Signal, and Location
  * @author Team 7
