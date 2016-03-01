@@ -44,7 +44,7 @@ public class Network
 	public boolean readFile(String filePath) throws IOException
 	{
 		File csvFile = new File(filePath);
-		CSVParser csvParser = CSVParser.parse(csvFile,Charset.forName("UTF-8"),CSVFormat.EXCEL.withHeader("Path_id","Type","Name","Settings","isFirstSection", "isLastSection","EdgeFrom","EdgeTo").withSkipHeaderRecord(true));
+		CSVParser csvParser = CSVParser.parse(csvFile,Charset.forName("UTF-8"),CSVFormat.EXCEL.withHeader("Path_id","Type","Name","Settings","EdgeFrom","EdgeTo").withSkipHeaderRecord(true));
 		
 		Map<String, Section> hm = new HashMap<String,Section>();
 		
@@ -73,12 +73,14 @@ public class Network
 			
 			else if("Location".equalsIgnoreCase(type))
 			{
-				graph.addNode(name);
-				Node n = graph.getNode(name);
-				n.addAttribute("path_id", id);
-				n.addAttribute("type", type);
-				n.addAttribute("object", new Location(name));
-				 n.addAttribute("ui.label", name);
+				if(graph.getNode(name) == null) {
+					graph.addNode(name);
+					Node n = graph.getNode(name);
+					n.addAttribute("path_id", id);
+					n.addAttribute("type", type);
+					n.addAttribute("object", new Location(name));
+					n.addAttribute("ui.label", name);
+				}
 			}
 
 		}
