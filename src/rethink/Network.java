@@ -66,7 +66,7 @@ public class Network
 				n.addAttribute("signal", settings);
 				Section sctn = new Section(split[1]);
 				n.addAttribute("SignalObject", new Signal(name, split[0], sctn));
-				 n.addAttribute("ui.label", name);
+				 n.addAttribute("ui.label", name+" "+split[0]);
 				hm.put(sctn.getName(), sctn);
 			
 			}
