@@ -25,7 +25,7 @@ public class Point extends Block {
 		
 		//Checks to make sure none of the signals are null.
 		if(main_line.equals(null)||minus_line.equals(null)||plus_line.equals(null))
-			throw new IllegalArgumentException("Duplicate defining signal.");
+			throw new IllegalArgumentException("Empty defining signal.");
 
 		//Checks to make sure none of the signals are the same.
 		if(main_line.equals(plus_line)||main_line.equals(minus_line)||plus_line.equals(minus_line))
