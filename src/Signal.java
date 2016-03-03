@@ -6,16 +6,21 @@
  * @author Team 7
  *
  */
-public class Signal extends Neighbour{
+public class Signal{
 	
 	public static final String UP = "up";
 	public static final String DOWN = "down";
 	public static final String CLEAR = "clear";
 	public static final String STOP = "stop";
+	public static final String STEM = "stem";
+	public static final String PLUS = "plus";
+	public static final String MINUS= "minus";
 	
+	private String name;
 	private String status = STOP;
 	private String viewDirection;
 	private Block protects;
+	private String line = STEM;
 	
 	/**
 	 * 
@@ -23,7 +28,27 @@ public class Signal extends Neighbour{
 	 * @param viewDirection set direction, UP or DOWN
 	 */
 	public Signal(String name, String viewDirection, Block protects){
-		super(name);
+		this.name = name;
+		
+		if(!(name.startsWith("s"))) {
+			throw new IllegalArgumentException("Invalid signal name: " + name);
+		}
+
+		if(viewDirection.equals(UP)||viewDirection.equals(DOWN))
+			this.viewDirection = viewDirection;
+		else 
+			throw new IllegalArgumentException("Invalid signal view direction: " + viewDirection);
+	
+		this.protects = protects;
+	}
+	
+	public Signal(String name, String viewDirection, Block protects,String line){
+		this.name = name;
+		
+		if(line.equals(PLUS)||line.equals(MINUS))
+			this.line = line;
+		else 
+			throw new IllegalArgumentException("Invalid signal view direction: " + viewDirection);
 		
 		if(!(name.startsWith("s"))) {
 			throw new IllegalArgumentException("Invalid signal name: " + name);
@@ -72,4 +97,39 @@ public class Signal extends Neighbour{
 		String v = this.viewDirection;
 		return v;
 	}
+	
+	/**
+	 * A signal is considered equal if it matches in Direction, Protects, and Name fields
+	 * @param s
+	 * @return
+	 */
+	public boolean equals(Signal s){
+		if(s.getDirection().equals(this.getDirection()))
+			if(s.getProtects().equals(this.getProtects()))
+				return s.getName().equals(this.getName());
+		return false;
+	}
+	
+	/**
+	 * Returns name
+	 * @return name
+	 */
+	public final String getName() {
+		String n = this.name;
+		return n;
+	}
+	
+	/**
+	 * Override toString method
+	 */
+	public String toString() {
+		String n = this.name;
+		return n;
+	}
+	
+	public String getLine(){
+		String l = line;
+		return l;
+	}
+
 }

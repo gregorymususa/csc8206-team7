@@ -1,4 +1,4 @@
-package controlroombuilding;
+
 /**
  * Models train object moving through a given Network
  * Train interfaces with the ControlRoom to figure out where it is

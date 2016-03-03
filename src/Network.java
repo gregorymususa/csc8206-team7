@@ -1,5 +1,6 @@
 
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,13 +30,19 @@ public class Network
 	public Network(String filePath)
 	{
 		graph = new SingleGraph("Network");
+		try {
+			readFile(filePath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
 	 * Returns the Network, represented by GraphStream's Graph
 	 * @return a Graph representation of the Network (Graph by GraphStream)
 	 */
-	public Graph getNetwork() {
+	public Graph getNetworkGraph() {
 		Graph g = this.graph;
 		return g;
 	}
@@ -76,8 +83,17 @@ public class Network
 				n.addAttribute("path_id", id);
 				n.addAttribute("type", type);
 				n.addAttribute("signal", settings);
+				
 				Section sctn = new Section(split[1]);
-				n.addAttribute("SignalObject", new Signal(name, split[0], sctn));
+				
+				if(split.length == 2)
+				{
+					n.addAttribute("SignalObject", new Signal(name, split[0], sctn));
+				}
+				else
+				{
+					n.addAttribute("SignalObject", new Signal(name, split[0], sctn,split[2]));
+				}
 				 n.addAttribute("ui.label", name+" "+split[0]);
 				hm.put(sctn.getName(), sctn);
 			
@@ -161,10 +177,11 @@ public class Network
 		
 		graph.addEdge(name,n2,n1);
 		Edge n = graph.getEdge(name);
-		//n.addAttribute("to", edgeTo);
-		//n.addAttribute("from", edgeFrom);
+		n.addAttribute("to", edgeTo);
+		n.addAttribute("from", edgeFrom);
 		}				
-		}
+	}
 		return true;
 	}
 }
+
