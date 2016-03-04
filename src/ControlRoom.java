@@ -489,13 +489,14 @@ public class ControlRoom {
 		String routesStr= "";
 		String startlocation = "";
 		String endlocation = "";
-		int numJourneys = 1;
+		int numJourneys = 0;
 		
 		printRoutes(routeTableMap);
 		
 		do{
 			//route sequence reset
 			routesStr = "";
+			numJourneys++;
 			
 			System.out.println("Building journey \"j"+numJourneys+"\"...");
 			
@@ -526,7 +527,6 @@ public class ControlRoom {
 			
 			if(isJourneyValid(routesArr, routeTableMap)){			
 				saveJourney("j"+numJourneys, routesArr, startlocation, endlocation);
-				numJourneys++;
 				System.out.println("Saved journey j"+numJourneys+"("+ startlocation + ","+endlocation+"): :"+routesStr);
 			}
 			else{
@@ -584,6 +584,8 @@ public class ControlRoom {
 					return false;
 		}
 		
+		//TODO: check to see if route is adjacent to Location
+		
 		return true;		
 	}
 	
@@ -595,7 +597,7 @@ public class ControlRoom {
 	 * @param endlocation
 	 */
 	private void saveJourney(String id,String[] routes,String startlocation, String endlocation){
-				CSVFormat csvformat = null;
+		CSVFormat csvformat = null;
 		FileWriter filewriter = null;
 		CSVPrinter csvPrinter = null;
 		try {
