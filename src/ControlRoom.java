@@ -1,6 +1,4 @@
 
-
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -27,22 +26,18 @@ public class ControlRoom {
 
 	private Network network;
 	private Graph netGraph;
+	private HashMap<String, String[]> routeTableMap;
 	
 	public ControlRoom(String filepath) {
 		network = new Network(filepath);
 		netGraph = network.getNetworkGraph();	
-//		network.display();
 	}
-
-	/**
-	 * runs the trains on the network after all journeys are set
-	 * Extension of the main project.
-	 */
-	void runNetwork() {
-		System.out.println("Run train network.");
+	
+	public void displayNetwork(){
+		network.display();
 	}
-
-
+	
+	
 	/**
 	 * For control room to set Points. Prints out Point track setting.
 	 * @param p
@@ -75,14 +70,20 @@ public class ControlRoom {
 		return false;
 	}
 	
+	/**
+	 * builds the route from a given network and saves it to persistent storage (.CSV)
+	 * @return HashMap of the route that was constructed. <String routeName, String[] route details (source, destination, points, signals, path, conflicts)>
+	 */
 	public void buildRoute(){
 		ArrayList<Node> upSigN= new ArrayList<Node>();
 		ArrayList<Node> downSigN = new ArrayList<Node>();
 		HashMap<String, String[]> upFlowRoutes = new HashMap<String,String[]>();
 		HashMap<String, String[]> downFlowRoutes= new HashMap<String,String[]>();
+		Set<String> keysUp = new HashSet<String>();
+		Set<String> keysDown = new HashSet<String>();
+		
 		String type = "";
 		int routeCount = 0;
-		
 		
 		APSP apsp = new APSP();
 		apsp.init(netGraph);
@@ -140,13 +141,15 @@ public class ControlRoom {
 				routeCount = downFlowRoutes.size()+upFlowRoutes.size();
 			}
 		}
+
+		
 		
 		//now to cross-reference the UP flow and DOWN flow routes. This completes the 
 		// 'points' and 'signals' fields and also fills out 'conflicts' for each route.
 		
 		//for each route in upflow...
-		Set<String> keysUp = new HashSet<String>(upFlowRoutes.keySet());
-		Set<String> keysDown = new HashSet<String>(downFlowRoutes.keySet());
+		keysUp = new HashSet<String>(upFlowRoutes.keySet());
+		keysDown = new HashSet<String>(downFlowRoutes.keySet());
 		
 		for(String k1: upFlowRoutes.keySet()){
 			String[] first = upFlowRoutes.get(k1);
@@ -161,6 +164,7 @@ public class ControlRoom {
 //					System.out.println("(UP v UP, same source signal): " + k1 + " and " + k2);
 					first[5] = first[5]+k2+";";
 					second[5] = second[5]+k1+";";
+
 					//add the signals from one conflicting route to the other's 'signals' field and vice versa
 					String temp = first[3];
 					first[3] = first[3]+second[3]+";";
@@ -180,9 +184,11 @@ public class ControlRoom {
 					
 				}
 				
+				//if one route follows another, make sure to include that signal in the others' signal path to avoid a following collision
 				if(first[1].equals(second[0])||first[0].equals(second[1])){
-					first[5] = first[5]+k2+";";
-					second[5] = second[5]+k1+";";						
+					String temp = first[3];
+					first[3] = first[3]+second[3]+";";
+					second[3] = second[3]+temp+";";				
 				}
 
 //					//if any routes share Sections in their path
@@ -312,54 +318,36 @@ public class ControlRoom {
 			downFlowRoutes.put(k1, first);
 		}
 
-		
-		//get rid of duplicate entries in 'signals' and 'conflicts' in each route
-		for(String k: upFlowRoutes.keySet()){
-			String[] e = upFlowRoutes.get(k);
-			String[] parts = e[3].split(";");
-			Set<String> unique = new HashSet<String>(Arrays.asList(parts));
-			e[3] = "";
-			for(String u: unique)
-				if(!u.equals(""))
-					e[3] = e[3] + u + ";";
-			upFlowRoutes.put(k,e);
-		}
-		for(String k: downFlowRoutes.keySet()){
-			String[] e = downFlowRoutes.get(k);
-			String[] parts = e[3].split(";");
-			Set<String> unique = new HashSet<String>(Arrays.asList(parts));
-			e[3] = "";
-			for(String u: unique)
-				if(!u.equals(""))
-					e[3] = e[3] + u + ";";
-			downFlowRoutes.put(k,e);
-		}
-		
-//TODO: fix clunkiness
-		for(String k: upFlowRoutes.keySet()){
-			String[] e = upFlowRoutes.get(k);
-			String[] parts = e[5].split(";");
-			Set<String> unique = new HashSet<String>(Arrays.asList(parts));
-			e[5] = "";
-			for(String u: unique)
-				if(!u.equals(""))
-					e[5] = e[5] + u + ";";
-			upFlowRoutes.put(k,e);
-		}
-		for(String k: downFlowRoutes.keySet()){
-			String[] e = downFlowRoutes.get(k);
-			String[] parts = e[5].split(";");
-			Set<String> unique = new HashSet<String>(Arrays.asList(parts));
-			e[5] = "";
-			for(String u: unique)
-				if(!u.equals(""))
-					e[5] = e[5] + u + ";";
-			downFlowRoutes.put(k,e);
-		}
 
+		//combine upFlowRoutes and downFlowRoutes into the same HashMap...
+		for(Entry<String, String[]> e: downFlowRoutes.entrySet())
+			upFlowRoutes.putIfAbsent(e.getKey(), e.getValue());
+
+		//get rid of duplicate entries in 'signals' and 'conflicts' in the combined HashMap
+		for(String k: upFlowRoutes.keySet()){
+			String[] e = upFlowRoutes.get(k);
+			String[] parts = e[3].split(";");
+			Set<String> unique = new HashSet<String>(Arrays.asList(parts));
+			e[3] = "";
+			for(String u: unique)
+				if(!u.equals(""))
+					e[3] = e[3] + u + ";";
+			upFlowRoutes.put(k,e);
+		}
+		for(String k: upFlowRoutes.keySet()){
+			String[] e = upFlowRoutes.get(k);
+			String[] parts = e[5].split(";");
+			Set<String> unique = new HashSet<String>(Arrays.asList(parts));
+			e[5] = "";
+			for(String u: unique)
+				if(!u.equals(""))
+					e[5] = e[5] + u + ";";
+			upFlowRoutes.put(k,e);
+		}
+		
+		routeTableMap = upFlowRoutes;
 		//Save the route interlocking table to persistent storage (CSV)
-		saveRoute(upFlowRoutes);
-		saveRoute(downFlowRoutes);
+		saveRoute(routeTableMap);
 	}
 	
 	private void saveRoute(HashMap<String,String[]> routeMap){
@@ -478,23 +466,125 @@ public class ControlRoom {
 //		//hope to eventually move all of the buildRoute conflict 
 //		return true;
 //	}
-
+	
+	/**
+	 * judge the source location is exist
+	 * @param location
+	 */
+	private  boolean isLocationExist(String location) {
+		for(Node n: netGraph.getEachNode()){
+			if(location.equalsIgnoreCase(n.getId()))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Public-facing method that allows the user to build a journey.
+	 * @param routeTableMap 
+	 */
 	public void buildJourney(){
-		String journeyName="j";
-		HashSet<String> routes = new HashSet<String>();
-		String startLocation="";
-		String endLocation="";
-		boolean build=true;
-		System.out.println("Would you like to add a journey? (y/n)");
-		while (build){
+		Scanner in = new Scanner(System.in);
+		String[] routesArr;
+		String routesStr= "";
+		String startlocation = "";
+		String endlocation = "";
+		int numJourneys = 1;
+		
+		printRoutes(routeTableMap);
+		
+		do{
+			//route sequence reset
+			routesStr = "";
 			
+			System.out.println("Building journey \"j"+numJourneys+"\"...");
 			
+			//Enter origin location
+			System.out.print("  Enter origin location: ");
+			startlocation = in.nextLine().toLowerCase();
+			while(!isLocationExist(startlocation)){
+				System.out.print("    ERROR: Origin location does not exist. \n  Please re-enter origin: ");
+				startlocation = in.nextLine().toLowerCase();
+			}
+
+			//Enter destination location
+			System.out.print("  Enter destination location: ");
+			endlocation = in.nextLine().toLowerCase();
+			while(startlocation.equals(endlocation)){
+				System.out.print("    ERROR: Origin and destination locations cannot be the same. \n  Please re-enter destination: ");
+				endlocation = in.nextLine();
+			}
+			while(!isLocationExist(endlocation)){
+				System.out.print("    ERROR: Destination location does not exist. \n  Please re-enter destination: ");
+				endlocation = in.nextLine().toLowerCase();
+			}
+
+			//Enter routes for journey details
+			System.out.print("  Enter a sequence of routes that make up the journey separated by semi-colons (\";\"): ");
+			routesStr= in.nextLine().toLowerCase();
+			routesArr = routesStr.split(";");
+			
+			if(isJourneyValid(routesArr, routeTableMap)){			
+				saveJourney("j"+numJourneys, routesArr, startlocation, endlocation);
+				numJourneys++;
+				System.out.println("Saved journey j"+numJourneys+"("+ startlocation + ","+endlocation+"): :"+routesStr);
+			}
+			else{
+				System.out.println("Unable to save invalid journey. Quitting building journey j"+numJourneys);
+				numJourneys--;
+			}
+			System.out.print("Would you like to add another journey? (y/n) ");
+		}while(in.nextLine().toLowerCase().startsWith("y"));
+		System.out.println("Finished building journeys.");
+		in.close();
+	}
+	
+	
+	/**
+	 * prints the route table given a HashMap containing the data
+	 * @param routeTableMap
+	 */
+	public void printRoutes(HashMap<String, String[]> routeTableMap) {
+		System.out.println("Routes Avalable: ");
+		for( Entry<String, String[]> e:routeTableMap.entrySet()){
+			String[] parts = e.getValue();
+			System.out.println("   "+e.getKey()+" ("+parts[0]+","+parts[1]+"): pts("+parts[2]+")  sigs("+parts[3]+")  path("+parts[4]+")  conf("+parts[5]+")");
+		}
+		System.out.println();
+	}
+
+	/**
+	 * returns true if journey input is valid
+	 * @param routesArr -- the routes that compose the journey to be tested
+	 * @param routeTableMap -- the existing route table
+	 * @return
+	 */
+	private boolean isJourneyValid(String[] routesArr, HashMap<String, String[]> routeTableMap){
+		//tableRouteMap is a HashMap of routes that exist with the route details in a String as the value
+
+		//check to see if the input journey routes exist in the table.
+		for(String r: routesArr){
+			if(!routeTableMap.containsKey(r))
+				return false;
 		}
 
+		//checking to make sure no route is doubled
+		for(int i =0; i<routesArr.length; i++)
+			for(int j = i+1; j<routesArr.length; j++){
+				if(routesArr[i].equals(routesArr[j]))
+					return false;
+		}
 		
-		//
+		//checking to make sure the routes are in order
+		for(int i =0; i<routesArr.length-1; i++)
+			for(int j = i+1; j<routesArr.length; j++){
+				String[] first = routeTableMap.get(routesArr[i]);
+				String[] second = routeTableMap.get(routesArr[j]);
+				if(!first[1].equals(second[0]))
+					return false;
+		}
 		
-		addJourney(journeyName, (String[]) routes.toArray(), startLocation, endLocation);
+		return true;		
 	}
 	
 	/**
@@ -504,7 +594,7 @@ public class ControlRoom {
 	 * @param startlocation
 	 * @param endlocation
 	 */
-	private void addJourney(String id,String[] routes,String startlocation, String endlocation){
+	private void saveJourney(String id,String[] routes,String startlocation, String endlocation){
 				CSVFormat csvformat = null;
 		FileWriter filewriter = null;
 		CSVPrinter csvPrinter = null;

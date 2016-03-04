@@ -1,0 +1,5 @@
+id,routes,startlocation,endlocation
+j1,,a,b
+j1,,a,b
+j1,r1; r2; r3; r4,b,a
+j1,r1;r3,a,b
