@@ -1,3 +1,4 @@
+package copy;
 
 import java.io.File;
 import java.io.FileWriter;
