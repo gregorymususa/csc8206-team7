@@ -44,7 +44,8 @@ public class ControlRoom {
 	
 	
 	/**
-	 * For control room to set Points. Prints out Point track setting.
+	 * Allows control room to set Points. Prints out Point track setting.
+	 * For use by Train class in an extension.
 	 * @param p
 	 * @param status
 	 * @return
@@ -60,7 +61,8 @@ public class ControlRoom {
 	}
 
 	/**
-	 * For control room to set Signals. Prints out Signal status setting.
+	 * Allows control room to set Signal. Prints out Signal setting.
+	 * For use by Train class in an extension.
 	 * @param s
 	 * @param status
 	 * @return
@@ -190,8 +192,6 @@ public class ControlRoom {
 					String temp = routeData1[3];
 					routeData1[3] = routeData1[3]+routeData2[3]+";";
 					routeData2[3] = routeData2[3]+temp+";";
-					upFlowRoutes.put(k1,routeData1);
-					upFlowRoutes.put(k2,routeData2);					
 				}								
 				
 				//IF: shared destination signal...
@@ -354,7 +354,11 @@ public class ControlRoom {
 		//Save the route interlocking table to persistent storage (CSV)
 		saveRoute(routeTableMap);
 	}
-	
+
+	/**
+	 * Saves route data out to the *.CSV when given the Hashmap of routes
+	 * @param routeMap
+	 */
 	private void saveRoute(HashMap<String,String[]> routeMap){
 		for(Entry<String, String[]> ent: routeMap.entrySet()){
 			String[] p = ent.getValue();
@@ -465,7 +469,7 @@ public class ControlRoom {
 	
 
 	/**
-	 * judge the source location is exist
+	 * Checks to see if the location input exists in the network
 	 * @param location
 	 */
 	private  boolean isLocationValid(String location) {
