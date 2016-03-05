@@ -1,4 +1,4 @@
-package organized;
+package debug;
 
 /**
  * Implements the Location, as part of the Railway Interlocking system

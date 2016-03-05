@@ -1,4 +1,4 @@
-package organized;
+package debug;
 
 /**
  * Models train object moving through a given Network

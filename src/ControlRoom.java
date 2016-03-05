@@ -1,5 +1,4 @@
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -151,7 +150,8 @@ public class ControlRoom {
 //						routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"m;";
 //					else 
 //						routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"p;";
-					
+//					System.out.println("Route "+ k1+routeData1[0]+","+routeData1[1] + " AND " + "Route "+ k2+ routeData2[0]+","+routeData2[1]);
+//					System.out.println("Route "+ k1+routeData1[2]+","+routeData1[3] + " AND " + "Route "+ k2+ routeData2[2]+","+routeData2[3]);
 					if(temp2[0].endsWith("p"))
 						routeData1[2] = routeData1[2] + temp2[0].substring(0, temp2[0].length()-1)+"m;";
 					else 
@@ -235,7 +235,7 @@ public class ControlRoom {
 						//The following route also tells the leading route where it could go next.
 						//The leading route can reference the follow route's point setting and update its own point field to 
 						//require the opposite setting in order to avoid a head-on collision
-						String[] temp1 = routeData1[2].split(";");
+//						String[] temp1 = routeData1[2].split(";");
 						String[] temp2 = routeData2[2].split(";");
 
 //						if(temp1[0].endsWith("p"))
@@ -444,46 +444,59 @@ public class ControlRoom {
 	 * This method builds the preliminary route table entry for a given list of nodes between two signals
 	 * The source signal is the first node.
 	 * The destination signal is the last node.
-	 * @param nodeParts - an array of strings/names of each node in the railway network 
+	 * @param pathNodeNames - an array of strings/names of each node in the railway network 
 	 * @param routeCount - for route naming purposes
 	 * @return the current number of routes created in the system
 	 */
-	private HashMap<String, String[]> findRoutes(String[] nodeParts, int routeCount, HashMap<String, String[]> routeMap){
-		
+	private HashMap<String, String[]> findRoutes(String[] pathNodeNames, int routeCount, HashMap<String, String[]> routeMap){
+		boolean valid = true;
 		routeCount++;
-		if(nodeParts.length<8 && nodeParts.length>3){
-			String source = nodeParts[0];
-			String destination = nodeParts[nodeParts.length-1];
+		if(pathNodeNames.length<8 && pathNodeNames.length>3){
+			String source = pathNodeNames[0];
+			String destination = pathNodeNames[pathNodeNames.length-1];
 			String sigs = "";
 			String path = "";
 			String points = "";
-			for(int k = 1; k < nodeParts.length-1; k++){
-				//any signals that exist between the source and destination are paired downflow signals
-				if(nodeParts[k].startsWith("s"))
-					sigs = sigs+nodeParts[k]+";";
-				else //anything else is a point or block that is part of the path
-					path = path+nodeParts[k]+";";
-				
-				//if the current node being checked is a point...
-				if(nodeParts[k].startsWith("p")){
-					Point p = netGraph.getNode(nodeParts[k]).getAttribute("object");
+			for(int k = 1; k < pathNodeNames.length-1; k++){
+				//if the path has a node without a number, then it contains a Location
+				if(!pathNodeNames[k].matches(".*\\d+.*")){
+					routeCount--; //skip invalid route
+					valid = false;
+					break;
+				}else{
+					//any signals that exist between the source and destination are paired opposite flow signals
+					if(pathNodeNames[k].startsWith("s"))
+						sigs = sigs+pathNodeNames[k]+";";
+					else
+						path = path+pathNodeNames[k]+";";						
 					
-					//if the node before the point is a block...
-					if(nodeParts[k-1].startsWith("b")){ 		//if moving FROM stem to plus or minus...
-						if(p.getMinusLine().getName().equals(nodeParts[k+2])) //checks to see if moving to minus line...
-							points = p+":m;"; 					//set: minus
-						else									//otherwise, set: plus 
-							points = p+":p;";						
+					//Additional steps are needed if the current node being checked is a POINT...
+					if(pathNodeNames[k].startsWith("p")){
+						Point p = netGraph.getNode(pathNodeNames[k]).getAttribute("object");
+						
+						//IF: the node before the point is a block...
+						if(pathNodeNames[k-1].startsWith("b")){ 		
+							//this means we need to detect which lines it is moving to and from
+							//checks to see if moving to minus line...
+							if(p.getMinusLine().getName().equals(pathNodeNames[k+2]))
+								points = p+":m;";				//set: minus
+							else
+								points = p+":p;"; 				//set: plus
+						}else{//then you are moving to the stem from a signal.
+							//check if you came from the minus line or plus line
+							Signal s = netGraph.getNode(pathNodeNames[k-1]).getAttribute("SignalObject");
+							String str = netGraph.getNode(pathNodeNames[k-1]).getAttribute("signal");
+//							String[] strParts = str.split(",");
+//							System.out.println(strParts[0]);
+							points = p+":"+ s.getLine().substring(0,1)+";";
+						}
 					}
-					else{//the node before the point is a signal, so this route is moving from plus or minus TO stem
-						Signal s = netGraph.getNode(nodeParts[k-1]).getAttribute("SignalObject");
-						points = p+":"+ s.getLine().substring(0,1)+";"; 					//set: minus
-					}
-					
 				}
 			}
-//			System.out.println("ROUTE " + routeCount+ "\tSource:\t" + source+ "\n\tDest:\t" + destination + "\n\tPoints:\t" + points + "\n\tSignals:"+ sigs + "\n\tPath:\t" + path);
-			routeMap.put("r"+routeCount, new String[] {source, destination, points, sigs, path, ""});
+			if(valid){
+//				System.out.println("ROUTE " + routeCount+ "\n\tSource:\t" + source+ "\n\tDest:\t" + destination + "\n\tPoints:\t" + points + "\n\tSignals:"+ sigs + "\n\tPath:\t" + path);
+				routeMap.put("r"+routeCount, new String[] {source, destination, points, sigs, path, ""});
+			}
 			sigs = "";
 			path = "";
 			points = "";
@@ -585,6 +598,7 @@ public class ControlRoom {
 				System.out.println("    ERROR: input route " + r + " does not exist in table.");
 				valid = false;
 			}
+		
 		//checking to see if first route sets out from the right location
 		routeData = routeTableMap.get(routesArr[0]);
 		if(getShortestPath(origin,routeData[0]).length > 4){
@@ -593,20 +607,19 @@ public class ControlRoom {
 		}
 
 		//checking to make sure the routes are in order
-		for(int i =0; i<routesArr.length-1; i++)
-			for(int j = i+1; j<routesArr.length; j++){
-				String[] first = routeTableMap.get(routesArr[i]);
-				String[] second = routeTableMap.get(routesArr[j]);
-				if(!first[1].equals(second[0])){
-					System.out.println("    ERROR: input route " + routesArr[i] + " is not connected to " + routesArr[j] + ".");
-					valid = false;
-				}
+		for(int i =0; i<routesArr.length-1; i++){
+			String[] first = routeTableMap.get(routesArr[i]);
+			String[] second = routeTableMap.get(routesArr[i+1]);
+			if(!first[1].equals(second[0])){
+				System.out.println("    ERROR: input route " + routesArr[i] + " is not connected to " + routesArr[i+1] + ".");
+				valid = false;
+			}
 		}
 
 		//checking to see if last route arrives to the right location
 		routeData = routeTableMap.get(routesArr[routesArr.length-1]);
 		if(getShortestPath(destination,routeData[1]).length > 4){
-			System.out.println("    ERROR: input route " + routesArr[1] + " does not terminate at destination " + destination + ".");
+			System.out.println("    ERROR: input route " + routesArr[routesArr.length-1] + " does not terminate at destination " + destination + ".");
 			valid = false;
 		}
 
