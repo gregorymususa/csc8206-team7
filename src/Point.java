@@ -1,6 +1,7 @@
 
 
 
+
 /**
  * Point models a section of track that forks off from a stem line
  * Point can set track to be in plus or minus setting

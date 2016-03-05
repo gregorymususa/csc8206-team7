@@ -70,7 +70,11 @@ public class Network
 		List<CSVRecord> csvRecords = csvParser.getRecords();
 		
 		for(int i = 0; i < csvRecords.size(); i+=1) {
-			int id = Integer.valueOf(csvRecords.get(i).get("Path_id")).intValue();//
+			
+			if("".equals(csvRecords.get(i).get("Path_id"))) {
+				continue;
+			}
+			int id = Integer.valueOf(csvRecords.get(i).get("Path_id")).intValue();
 			String type = csvRecords.get(i).get("Type");
 			String name = csvRecords.get(i).get("Name");
 			String settings = csvRecords.get(i).get("Settings");
@@ -113,6 +117,11 @@ public class Network
 
 		}
 		for(int i = 0; i < csvRecords.size(); i+=1) {
+			
+			if("".equals(csvRecords.get(i).get("Path_id"))) {
+				continue;
+			}
+			
 			int id = Integer.valueOf(csvRecords.get(i).get("Path_id")).intValue();//
 			String type = csvRecords.get(i).get("Type");
 			String name = csvRecords.get(i).get("Name");
@@ -138,6 +147,11 @@ public class Network
 		}
 	
 		for(int i = 0; i < csvRecords.size(); i+=1) {
+			
+			if("".equals(csvRecords.get(i).get("Path_id"))) {
+				continue;
+			}
+			
 			int id = Integer.valueOf(csvRecords.get(i).get("Path_id")).intValue();//
 			String type = csvRecords.get(i).get("Type");
 			String name = csvRecords.get(i).get("Name");
@@ -183,7 +197,9 @@ public class Network
 			Edge n = graph.getEdge(name);
 			n.addAttribute("to", edgeTo);
 			n.addAttribute("from", edgeFrom);
-			}				
+			}				if("".equals(csvRecords.get(i).get("Path_id"))) {
+				continue;
+			}
 		}
 		
 		if(!(this.isValid(graph,csvRecords))) {
