@@ -1,3 +1,4 @@
+package organized;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,6 +20,7 @@ import org.graphstream.graph.*;
 
 /**
  * 
+ * This class contains the algorithms
  * @author Team 7
  *
  */
@@ -104,6 +106,7 @@ public class ControlRoom {
 		
 		//for each route in upflow...
 		for(String k1: upFlowRoutes.keySet()){
+			keysUp = new HashSet<String>(upFlowRoutes.keySet());
 			routeData1 = upFlowRoutes.get(k1);
 			keysUp.remove(k1); //removes from keyset to be tested against to avoid doubles
 
@@ -135,17 +138,19 @@ public class ControlRoom {
 				
 				//IF: first route follows the second route...
 				if(routeData2[0].equals(routeData1[1])){
-					//these routes are not in conflict. 
-					//However, the following route does tell the leading route where it could go next.
+					//these routes are in conflict. 
+					routeData1[5] = routeData1[5]+k2+";";
+					routeData2[5] = routeData2[5]+k1+";";
+					//The following route also tells the leading route where it could go next.
 					//The leading route can reference the follow route's point setting and update its own point field to 
 					//require the opposite setting in order to avoid a head-on collision
 					String[] temp1 = routeData1[2].split(";");
 					String[] temp2 = routeData2[2].split(";");
 
-					if(temp1[0].endsWith("p"))
-						routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"m;";
-					else 
-						routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"p;";
+//					if(temp1[0].endsWith("p"))
+//						routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"m;";
+//					else 
+//						routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"p;";
 					
 					if(temp2[0].endsWith("p"))
 						routeData1[2] = routeData1[2] + temp2[0].substring(0, temp2[0].length()-1)+"m;";
@@ -189,6 +194,7 @@ public class ControlRoom {
 
 		//for each route in downflow...
 		for(String k1: downFlowRoutes.keySet()){
+			keysDown = new HashSet<String>(downFlowRoutes.keySet());
 			routeData1 = downFlowRoutes.get(k1);
 			keysDown.remove(k1); //removing the key being compared prevents non-conflicting signals from being added to each others' conflict lists.
 
@@ -222,18 +228,20 @@ public class ControlRoom {
 					}
 					
 					//IF: first route follows the second route...
-					if(routeData1[0].equals(routeData2[1])){
-						//these routes are not in conflict. 
-						//However, the following route does tell the leading route where it could go next.
+					if(routeData2[0].equals(routeData1[1])){
+						//these routes are in conflict. 
+						routeData1[5] = routeData1[5]+k2+";";
+						routeData2[5] = routeData2[5]+k1+";";
+						//The following route also tells the leading route where it could go next.
 						//The leading route can reference the follow route's point setting and update its own point field to 
 						//require the opposite setting in order to avoid a head-on collision
 						String[] temp1 = routeData1[2].split(";");
 						String[] temp2 = routeData2[2].split(";");
 
-						if(temp1[0].endsWith("p"))
-							routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"m;";
-						else 
-							routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"p;";
+//						if(temp1[0].endsWith("p"))
+//							routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"m;";
+//						else 
+//							routeData2[2] = routeData2[2] + temp1[0].substring(0, temp1[0].length()-1)+"p;";
 						
 						if(temp2[0].endsWith("p"))
 							routeData1[2] = routeData1[2] + temp2[0].substring(0, temp2[0].length()-1)+"m;";
@@ -349,7 +357,7 @@ public class ControlRoom {
 	 * @param status
 	 * @return
 	 */
-	public boolean setPoint(Point p, String track){
+	boolean setPoint(Point p, String track){
 		if(p.setTrack(track)){
 			System.out.println(p + " set to " + track + ": "+ p.getTrack() + ".");
 			return true;
@@ -367,7 +375,7 @@ public class ControlRoom {
 	 * @param status
 	 * @return
 	 */
-	public boolean setSignal(Signal s, String status){
+	boolean setSignal(Signal s, String status){
 		if(s.setStatus(status)){
 			System.out.println(s + "set to " + status + ".");
 			return true;
@@ -537,7 +545,13 @@ public class ControlRoom {
 		System.out.println("Routes Avalable: ");
 		for( Entry<String, String[]> e:routeTableMap.entrySet()){
 			String[] parts = e.getValue();
-			System.out.println("   "+e.getKey()+" ("+parts[0]+","+parts[1]+"): pts("+parts[2]+")  sigs("+parts[3]+")  path("+parts[4]+")  conf("+parts[5]+")");
+//			System.out.println("-----"+e.getKey()+":("+parts[0]+","+parts[1]+")-----");
+//			System.out.println("     pnts: "+parts[2].substring(0, parts[2].length()-1));
+//			System.out.println("     sigs: "+parts[3].substring(0, parts[3].length()-1));
+//			System.out.println("     path: "+parts[4].substring(0, parts[4].length()-1));
+//			System.out.println("     conf: "+parts[5].substring(0, parts[5].length()-1));
+			System.out.println("   "+e.getKey()+" ("+parts[0]+","+parts[1]+"): ("+parts[2]+")  ("+parts[3]+")  ("+parts[4]+")  ("+parts[5]+")");
+
 		}
 		System.out.println();
 	}
@@ -591,7 +605,7 @@ public class ControlRoom {
 
 		//checking to see if last route arrives to the right location
 		routeData = routeTableMap.get(routesArr[routesArr.length-1]);
-		if(getShortestPath(destination,routeData[0]).length > 4){
+		if(getShortestPath(destination,routeData[1]).length > 4){
 			System.out.println("    ERROR: input route " + routesArr[1] + " does not terminate at destination " + destination + ".");
 			valid = false;
 		}
