@@ -527,8 +527,8 @@ public class ControlRoom {
 
 	/**
 	 * Saves the names of the parameters to persistent storage (CSV file)
-	 * TODO potential extension — save to DB
-	 * TODO potential extension — use fewer parameters, and extrapolate the route from it (less chance of input/human error)
+	 * TODO potential extension ï¿½ save to DB
+	 * TODO potential extension ï¿½ use fewer parameters, and extrapolate the route from it (less chance of input/human error)
 	 * 
 	 * @param route_name
 	 * @param source
@@ -578,12 +578,12 @@ public class ControlRoom {
 		System.out.println("Routes Available: ");
 		for( Entry<String, String[]> e:routeTableMap.entrySet()){
 			String[] parts = e.getValue();
-			System.out.println("-----"+e.getKey()+":("+parts[0]+","+parts[1]+")-----");
-			System.out.println("   pnts: "+parts[2].substring(0, parts[2].length()-1));
-			System.out.println("   sigs: "+parts[3].substring(0, parts[3].length()-1));
-			System.out.println("   path: "+parts[4].substring(0, parts[4].length()-1));
-			System.out.println("   conf: "+parts[5].substring(0, parts[5].length()-1));
-//			System.out.println("  "+e.getKey()+" ("+parts[0]+","+parts[1]+"):\t("+parts[2]+")  ("+parts[3]+")  ("+parts[4]+")  ("+parts[5]+")");
+//			System.out.println("-----"+e.getKey()+":("+parts[0]+","+parts[1]+")-----");
+//			System.out.println("   pnts: "+parts[2].substring(0, parts[2].length()-1));
+//			System.out.println("   sigs: "+parts[3].substring(0, parts[3].length()-1));
+//			System.out.println("   path: "+parts[4].substring(0, parts[4].length()-1));
+//			System.out.println("   conf: "+parts[5].substring(0, parts[5].length()-1));
+			System.out.println("  "+e.getKey()+" ("+parts[0]+","+parts[1]+"):\t("+parts[2]+")  ("+parts[3]+")  ("+parts[4]+")  ("+parts[5]+")");
 			
 		}
 		System.out.println();

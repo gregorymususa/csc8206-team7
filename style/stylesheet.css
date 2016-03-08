@@ -1,0 +1,55 @@
+node{
+	shape: box;
+	text-alignment:above;
+	text-background-mode:plain;
+	text-size: 14px;
+}
+
+node.signalUp{
+	 shape: box;
+	 text-alignment:above;
+	 text-background-mode:plain;
+	 fill-mode: image-scaled;
+	 fill-image: url('style/signal.jpg');
+	 icon: url('style/arrowUp.gif');
+	 icon-mode: at-left;
+	 size: 30px;
+	 
+	
+}
+
+node.signalDown{
+	 shape: box;
+	 text-alignment:above;
+	 text-background-mode:plain;
+	 fill-mode: image-scaled;
+	 fill-image: url('style/signal.jpg');
+	 icon: url('style/arrowDown.gif');
+	 icon-mode: at-left;
+	 size: 30px;
+	
+}
+
+node.location{
+	size: 25px;
+	fill-mode: image-scaled;
+	fill-image: url('style/location.gif');
+	text-size: 15px;
+	text-style: bold;
+}
+
+node.section{
+	size:0px;
+}
+
+node.point{
+	
+	fill-mode: image-scaled;
+	fill-image: url('style/point.png');
+	size: 28px;
+}
+
+edge{
+	stroke-mode:dots;
+	fill-color: #336699;
+}

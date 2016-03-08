@@ -15,6 +15,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
+import org.graphstream.ui.view.Viewer;
 
 /**
  * This class represents the Railway Network
@@ -43,6 +44,7 @@ public class Network
 	 * @return a Graph representation of the Network (Graph by GraphStream)
 	 */
 	public Graph getNetworkGraph() {
+		
 		Graph g = this.graph;
 		return g;
 	}
@@ -51,7 +53,10 @@ public class Network
 	 * Display a graph as a Network
 	 */
 	public void display() {
+		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		graph.display();
+	    graph.addAttribute("ui.stylesheet", "url('file:./style/stylesheet.css')");
+		
 	}
 
 	/**
@@ -86,8 +91,16 @@ public class Network
 				Node n = graph.getNode(name);
 				n.addAttribute("path_id", id);
 				n.addAttribute("type", type);
-				n.addAttribute("signal", settings);
-				
+				if("up".equals(split[0]))
+				{
+					n.addAttribute("signal", settings);
+					n.addAttribute("ui.class", "signalUp");
+				}
+				else
+				{
+					n.addAttribute("signal", settings);
+					n.addAttribute("ui.class", "signalDown");
+				}
 				Section sctn = new Section(split[1]);
 				
 				if(split.length == 2)
@@ -98,7 +111,7 @@ public class Network
 				{
 					n.addAttribute("SignalObject", new Signal(name, split[0], sctn,split[2]));
 				}
-				 n.addAttribute("ui.label", name+" "+split[0]);
+				 n.addAttribute("ui.label", name);
 				hm.put(sctn.getName(), sctn);
 			
 			}
@@ -112,6 +125,7 @@ public class Network
 					n.addAttribute("type", type);
 					n.addAttribute("object", new Location(name));
 					n.addAttribute("ui.label", name);
+					n.addAttribute("ui.class","location");
 				}
 			}
 
@@ -133,7 +147,9 @@ public class Network
 				Node n = graph.getNode(name);
 				n.addAttribute("path_id", id);
 				n.addAttribute("type", type);
-				 n.addAttribute("ui.label", name);
+				n.addAttribute("ui.label", name);
+				n.addAttribute("ui.class","section");
+				
 				if(hm.containsKey(name))
 				{
 					n.addAttribute("object", hm.get(name));
@@ -172,6 +188,8 @@ public class Network
 					n.addAttribute("main", split[0]);
 					n.addAttribute("plus", split[1]);
 					n.addAttribute("minus", split[2]);
+					
+					n.addAttribute("ui.class","point");
 					
 					n.addAttribute("object", new Point(name,(Section) n1.getAttribute("object"),(Section)n2.getAttribute("object"),(Section)n3.getAttribute("object")));
 					
